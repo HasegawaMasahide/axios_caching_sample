@@ -15,7 +15,7 @@ v18.13.0
 
 ```
 npm install
-npx run build
+npm run build
 ```
 
 ```dist/main.js```が出力されます。

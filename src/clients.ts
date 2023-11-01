@@ -1,5 +1,6 @@
-import axios from "axios";
+import axios, { AxiosAdapter } from "axios";
 import { setup } from "axios-cache-adapter";
+import { cacheAdapterEnhancer } from "axios-extensions";
 
 const with_no_cache = axios.create();
 
@@ -13,6 +14,8 @@ const with_adapter = setup({
 	}
 });
 
-const with_extensions = with_no_cache;	// @TODO
+const with_extensions = axios.create({
+	adapter: cacheAdapterEnhancer(axios.defaults.adapter as AxiosAdapter)
+});
 
 export { with_no_cache, with_adapter, with_extensions };

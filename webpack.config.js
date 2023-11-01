@@ -10,6 +10,12 @@ module.exports = {
 				test: /\.ts$/,
 				use: 'ts-loader',
 			},
+			{
+				test: /\.m?js/,
+				resolve: {
+					fullySpecified: false
+				}
+			}
 		],
 	},
 
@@ -23,4 +29,10 @@ module.exports = {
 		ignored: /node_modules/,
 		poll: 5000
 	},
+
+	plugins: [
+		new webpack.ProvidePlugin({
+			process: 'process/browser'
+		})
+	]
 };
