@@ -7,10 +7,10 @@ import { AxiosInstance } from "axios";
 import useClient from "./utils";
 import { with_adapter, with_extensions, with_no_cache } from "./clients";
 import { CLASS_NAME_BUTTON_SELECTED, ID, URL_TO } from "./constant";
-
-
+import fire from "./progress";
 
 let client: AxiosInstance = with_no_cache;
+let progress: HTMLProgressElement;
 
 /**
  * 画面の入力欄から送信先URLを取得する
@@ -46,6 +46,7 @@ const getParams = () => {
  */
 const onClickSingleSend = () => {
 	console.log("onClickSingleSend");
+	fire(progress);
 	const params = getParams();
 	const url_to = getUrlTo();
 
@@ -63,6 +64,7 @@ const onClickSingleSend = () => {
  */
 const onClickParallelSend = () => {
 	console.log("onClickParallelSend");
+	fire(progress);
 	const params = getParams();
 	const url_to = getUrlTo();
 
@@ -80,7 +82,7 @@ const onClickParallelSend = () => {
  */
 const onClickSerialSend = () => {
 	console.log("onClickSerialSend");
-
+	fire(progress);
 	const params = getParams();
 	const url_to = getUrlTo();
 
@@ -141,9 +143,11 @@ const onClickUseExtensions = () => {
 /**
  * 画面にイベントを割り当てる
  */
-const init = () => {
+const onLoad = () => {
 	const url_to_input = document.getElementById(ID.INPUT.URL_TO) as HTMLInputElement;
 	url_to_input.value = URL_TO;
+
+	progress = document.getElementById(ID.PROGRESS) as HTMLProgressElement;
 
 	console.log("add event listeners...");
 	document.getElementById(ID.SEND.ONCE)?.addEventListener("click", onClickSingleSend);
@@ -154,4 +158,4 @@ const init = () => {
 	document.getElementById(ID.USE.ADAPTER)?.addEventListener("click", onClickUseAdapter);
 	document.getElementById(ID.USE.EXTENSIONS)?.addEventListener("click", onClickUseExtensions);
 }
-window.onload = init;
+window.onload = onLoad;

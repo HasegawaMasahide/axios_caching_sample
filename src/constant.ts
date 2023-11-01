@@ -17,6 +17,8 @@ export const CLASS_NAME_BUTTON_SELECTED = "is-primary";
  * HTMLのID属性と合わせて定義する
  */
 export const ID = {
+	PROGRESS: "progress",
+
 	INPUT: {
 		URL_TO: "url_to",
 		PARAM: "param",
