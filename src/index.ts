@@ -6,19 +6,9 @@
 import { AxiosInstance } from "axios";
 import useClient from "./utils";
 import { with_adapter, with_extensions, with_no_cache } from "./clients";
+import { CLASS_NAME_BUTTON_SELECTED, ID, URL_TO } from "./constant";
 
-const URL_TO = "https://httpbin.org/get";
 
-const ID_URL_TO = "url_to";
-const ID_PARAM = "param";
-const ID_SEND_ONCE = "once";
-const ID_SEND_PARALLEL = "parallel";
-const ID_SEND_SERIAL = "serial";
-const ID_USE_NO_CACHE = "no_cache";
-const ID_USE_ADAPTER = "adapter";
-const ID_USE_EXTENSIONS = "extensions";
-
-const CLASS_NAME_BUTTON_SELECTED = "is-primary";
 
 let client: AxiosInstance = with_no_cache;
 
@@ -28,7 +18,7 @@ let client: AxiosInstance = with_no_cache;
  * @returns
  */
 const getUrlTo = () => {
-	const input = document.getElementById(ID_URL_TO) as HTMLInputElement;
+	const input = document.getElementById(ID.INPUT.URL_TO) as HTMLInputElement;
 	const url_to = input.value;
 	return url_to || URL_TO;
 }
@@ -39,7 +29,7 @@ const getUrlTo = () => {
  * @returns
  */
 const getParams = () => {
-	const textarea = document.getElementById(ID_PARAM) as HTMLTextAreaElement;
+	const textarea = document.getElementById(ID.INPUT.PARAM) as HTMLTextAreaElement;
 	const paramStr = textarea.value;
 	try {
 		const param = JSON.parse(paramStr);
@@ -109,7 +99,8 @@ const addClassToButton = (id: string) => {
 }
 
 const removeClassFromButtons = () => {
-	[ID_USE_NO_CACHE, ID_USE_ADAPTER, ID_USE_EXTENSIONS]
+	Object.entries(ID.USE)
+	.map(([key, value]) => value)
 	.forEach(id => {
 		const button = document.getElementById(id) as HTMLButtonElement;
 		button.classList.remove(CLASS_NAME_BUTTON_SELECTED);
@@ -123,7 +114,7 @@ const onClickUseNoCache = () => {
 	console.log("use no-cache...");
 	client = with_no_cache;
 	removeClassFromButtons();
-	addClassToButton(ID_USE_NO_CACHE);
+	addClassToButton(ID.USE.NO_CACHE);
 }
 
 /**
@@ -133,7 +124,7 @@ const onClickUseAdapter = () => {
 	console.log("use axios-cache-adapter...");
 	client = with_adapter;
 	removeClassFromButtons();
-	addClassToButton(ID_USE_ADAPTER);
+	addClassToButton(ID.USE.ADAPTER);
 }
 
 /**
@@ -143,7 +134,7 @@ const onClickUseExtensions = () => {
 	console.log("use axios-extensions...");
 	client = with_extensions;
 	removeClassFromButtons();
-	addClassToButton(ID_USE_EXTENSIONS);
+	addClassToButton(ID.USE.EXTENSIONS);
 }
 
 
@@ -151,14 +142,16 @@ const onClickUseExtensions = () => {
  * 画面にイベントを割り当てる
  */
 const init = () => {
+	const url_to_input = document.getElementById(ID.INPUT.URL_TO) as HTMLInputElement;
+	url_to_input.value = URL_TO;
+
 	console.log("add event listeners...");
-	document.getElementById(ID_SEND_ONCE)?.addEventListener("click", onClickSingleSend);
-	document.getElementById(ID_SEND_PARALLEL)?.addEventListener("click", onClickParallelSend);
-	document.getElementById(ID_SEND_SERIAL)?.addEventListener("click", onClickSerialSend);
+	document.getElementById(ID.SEND.ONCE)?.addEventListener("click", onClickSingleSend);
+	document.getElementById(ID.SEND.PARALLEL)?.addEventListener("click", onClickParallelSend);
+	document.getElementById(ID.SEND.SERIAL)?.addEventListener("click", onClickSerialSend);
 
-
-	document.getElementById(ID_USE_NO_CACHE)?.addEventListener("click", onClickUseNoCache);
-	document.getElementById(ID_USE_ADAPTER)?.addEventListener("click", onClickUseAdapter);
-	document.getElementById(ID_USE_EXTENSIONS)?.addEventListener("click", onClickUseExtensions);
+	document.getElementById(ID.USE.NO_CACHE)?.addEventListener("click", onClickUseNoCache);
+	document.getElementById(ID.USE.ADAPTER)?.addEventListener("click", onClickUseAdapter);
+	document.getElementById(ID.USE.EXTENSIONS)?.addEventListener("click", onClickUseExtensions);
 }
 window.onload = init;
