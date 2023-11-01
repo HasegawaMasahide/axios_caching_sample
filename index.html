@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>axios cache test</title>
+		<meta charset="UTF-8" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.css" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
+		<meta name="landscape" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
+		<meta name="format-detection" content="telephone=no" />
+	</head>
+	<body>
+		<script src="./dist/main.js"></script>
+		<input class="input" id="url_to" value="https://httpbin.org/get" />
+		<textarea class="textarea" id="param" rows="5"></textarea>
+		<button class="button" id="once">1回送信する</button>
+		<button class="button" id="parallel">並列で10回送信する</button>
+		<button class="button" id="serial">直列で10回送信する</button><br />
+
+		<button class="button is-primary" id="no_cache">no-cache(default)</button>
+		<button class="button" id="adapter">axios-cache-adapter</button>
+		<button class="button" id="extensions">axios-extensions</button>
+	</body>
+</html>

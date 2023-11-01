@@ -1,0 +1,12 @@
+{
+  "editor.renderControlCharacters": true,
+  "editor.renderWhitespace": "all",
+
+  "git-graph.maxDepthOfRepoSearch": 2,
+
+  "editor.tabSize": 4,
+  "editor.insertSpaces": false,
+
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+}
