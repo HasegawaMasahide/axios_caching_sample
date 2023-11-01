@@ -4,6 +4,7 @@
 		"target": "ES5",
 		"module": "ES2015",
 		"strict": true,
-		"moduleResolution": "node"
+		"moduleResolution": "node",
+		"esModuleInterop": true
 	}
 }
