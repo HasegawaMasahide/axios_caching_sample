@@ -1,7 +1,7 @@
 /**
  * キャッシュする秒数
  */
-export const CACHE_MAX_AGE_SEC = 10;
+export const CACHE_MAX_AGE_SEC = 5;
 
 /**
  * デフォルトのリクエスト先URL

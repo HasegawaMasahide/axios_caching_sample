@@ -1,8 +1,17 @@
 const webpack = require("webpack");
+const path = require("path");
+const CopyPlugin = require("copy-webpack-plugin");
+
+const srcPath = path.join(__dirname, "src");
+const publicPath = path.join(__dirname, "public");
+const distPath = path.join(__dirname, "dist");
 
 module.exports = {
-	mode: 'development',
-	entry: './src/index.ts',
+	entry: path.join(srcPath, "index.ts"),
+	output: {
+		filename: "main.js",
+		path: distPath
+	},
 
 	module: {
 		rules: [
@@ -25,14 +34,23 @@ module.exports = {
 		]
 	},
 
+	plugins: [
+		new webpack.ProvidePlugin({
+			process: 'process/browser'
+		}),
+		new CopyPlugin({
+			patterns: [{ from: publicPath, to: distPath }],
+		}),
+	],
+
+	devServer: {
+		static: {
+			directory: distPath
+		}
+	},
+
 	watchOptions: {
 		ignored: /node_modules/,
 		poll: 5000
 	},
-
-	plugins: [
-		new webpack.ProvidePlugin({
-			process: 'process/browser'
-		})
-	]
 };
