@@ -4,7 +4,8 @@
   "description": "axiosでGETリクエストをキャッシュする技術調査",
   "scripts": {
     "start": "webpack-dev-server --open --mode development",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "publish": "npm run build && gh-pages -d dist/"
   },
   "author": "M.Hasegawa",
   "license": "MIT",
@@ -17,6 +18,7 @@
   },
   "devDependencies": {
     "copy-webpack-plugin": "^11.0.0",
+    "gh-pages": "^6.0.0",
     "ts-loader": "^9.5.0",
     "typescript": "^5.2.2",
     "webpack": "^5.89.0",
