@@ -21,6 +21,8 @@ export const ID = {
 
 	INPUT: {
 		URL_TO: "url_to",
+		METHOD: 'method',
+		TIMES: 'times',
 		PARAM: "param",
 	},
 

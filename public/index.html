@@ -11,16 +11,37 @@
 	</head>
 	<body>
 		<script src="main.js"></script>
-		<input class="input" id="url_to" />
+		<div class="columns">
+			<div class="column is-two-thirds">
+				<input class="input" id="url_to" />
+			</div>
+			<div class="column">
+				<input class="input" id="times" placeholder="実行回数" />
+			</div>
+			<div class="column">
+				<div class="select">
+					<select id="method" >
+						<option value="GET">GET</option>
+						<option value="POST">POST</option>
+					</select>
+				</div>
+			</div>
+		</div>
+
 		<textarea class="textarea" id="param" rows="5"></textarea>
-		<button class="button" id="once">1回送信する</button>
-		<button class="button" id="parallel">並列で10回送信する</button>
-		<button class="button" id="serial">直列で10回送信する</button><br />
+		
+		<button class="button" id="once">1回だけ送信する</button>
+		<button class="button" id="parallel">並列で指定回数送信する</button>
+		<button class="button" id="serial">直列で指定回数送信する</button><br />
 
 		<button class="button is-primary" id="no_cache">no-cache(default)</button>
 		<button class="button" id="adapter">axios-cache-adapter</button>
 		<button class="button" id="extensions">axios-extensions</button><br />
 
 		<progress class="progress is-info is-medium mt-3" value="0" id="progress"></progress>
+
+		<p>
+			JSON中に %times% と記述すると、リクエストの試行回数(0始まり)が埋め込まれます
+		</p>
 	</body>
 </html>

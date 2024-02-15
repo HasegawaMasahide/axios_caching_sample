@@ -1,15 +1,24 @@
 import { AxiosInstance, AxiosResponse } from "axios";
 
+const ALLOWED_AXIOS_METHOD = {
+	GET: 'get',
+	POST: 'post'
+} as const;
+export type MethodType = keyof typeof ALLOWED_AXIOS_METHOD;
+export const isMethodType = (arg: any): arg is MethodType => {
+	return arg in ALLOWED_AXIOS_METHOD;
+}
+
 /**
  * Axiosのインスタンスを渡すと、リクエスト実行処理を提供するファクトリ
  * @param client
  * @returns
  */
-const useClient = (client:AxiosInstance) => {
+const useClient = (client:AxiosInstance, method: MethodType) => {
 	return {
-		send_once: (url: string, params?: object) => send_once(client, url, params),
-		send_multiple_parallel: (url: string, times: number, params?: object) => send_multiple_parallel(client, times, url, params),
-		send_multiple_serial: (url: string, times: number, params?: object) => send_multiple_serial(client, times, url, params)
+		send_once: (url: string, paramCreator: (times: number) => object) => send_once(client, method, url, paramCreator),
+		send_multiple_parallel: (url: string, times: number, paramCreator: (times: number) => object) => send_multiple_parallel(client, method, times, url, paramCreator),
+		send_multiple_serial: (url: string, times: number, paramCreator: (times: number) => object) => send_multiple_serial(client, method, times, url, paramCreator)
 	}
 }
 
@@ -20,7 +29,7 @@ const useClient = (client:AxiosInstance) => {
  * @param params
  * @returns
  */
-const send_once = (client:AxiosInstance, url: string, params?: object) => client.get(url, { params });
+const send_once = (client:AxiosInstance, method: MethodType, url: string, paramCreator: (times: number) => object) => client[ALLOWED_AXIOS_METHOD[method]](url, paramCreator(1));
 
 /**
  * GETリクエストを複製し、並列に実行するラッパー
@@ -30,8 +39,8 @@ const send_once = (client:AxiosInstance, url: string, params?: object) => client
  * @param params
  * @returns
  */
-const send_multiple_parallel = (client:AxiosInstance, times:number, url: string, params?: object) => {
-	const requests = [...Array(times)].map(i => client.get(url, { params }));
+const send_multiple_parallel = (client:AxiosInstance, method: MethodType, times:number, url: string, paramCreator: (times: number) => object) => {
+	const requests = [...Array(times)].map((_, i) => client[ALLOWED_AXIOS_METHOD[method]](url, paramCreator(i)));
 	const parallel = Promise.all(requests);
 	return parallel;
 }
@@ -44,8 +53,8 @@ const send_multiple_parallel = (client:AxiosInstance, times:number, url: string,
  * @param params
  * @returns
  */
-const send_multiple_serial = async (client:AxiosInstance, times:number, url: string, params?: object) => {
-	const requests = [...Array(times)].map(i => () => client.get(url, { params }));
+const send_multiple_serial = async (client:AxiosInstance, method: MethodType, times:number, url: string, paramCreator: (times: number) => object) => {
+	const requests = [...Array(times)].map((_, i) => () => client[ALLOWED_AXIOS_METHOD[method]](url, paramCreator(i)));
 	const results: AxiosResponse<any>[] = [];
 
 	// reduce の初期値として使いたいので取り出す

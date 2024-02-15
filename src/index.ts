@@ -4,7 +4,7 @@
  */
 
 import { AxiosInstance } from "axios";
-import useClient from "./utils";
+import useClient, { MethodType, isMethodType } from "./utils";
 import { with_adapter, with_extensions, with_no_cache } from "./clients";
 import { CLASS_NAME_BUTTON_SELECTED, ID, URL_TO } from "./constant";
 import fire from "./progress";
@@ -24,19 +24,46 @@ const getUrlTo = () => {
 }
 
 /**
+ * 画面の入力欄から直列・並列の実行回数を取得する
+ * 取得できなかった場合 or 非数値の場合は1回とする
+ * @returns 
+ */
+const getTimes = () => {
+	const input = document.getElementById(ID.INPUT.TIMES) as HTMLInputElement;
+	const times = input.value;
+	return Number(times) || 1;
+}
+
+/**
+ * 画面の入力欄からリクエストメソッドを取得する
+ * 取得できなかった場合はGETとして扱う
+ * @returns 
+ */
+const getRequestMethod: () => MethodType = () => {
+	const select = document.getElementById(ID.INPUT.METHOD) as HTMLSelectElement;
+	const method = select.value;
+	return isMethodType(method) ? method : 'GET';
+}
+
+/**
  * 画面の入力欄を取得し、値をJSONとして解釈する
  * JSONにパースできない場合はundefined（送信しない）
  * @returns
  */
-const getParams = () => {
+const getCreateParamFunc = () => {
 	const textarea = document.getElementById(ID.INPUT.PARAM) as HTMLTextAreaElement;
-	const paramStr = textarea.value;
+	const template = textarea.value.replaceAll("%times%", "0");
 	try {
-		const param = JSON.parse(paramStr);
-		return param;
+		JSON.parse(template);	// 変換可能であれば、のチェック
+		return (times: number) => {
+			const paramStr = textarea.value.replaceAll("%times%", String(times));
+			return JSON.parse(paramStr);	// ↑で変換可能ならここでも変換可能、と判断
+		};
 	} catch(e) {
 		console.warn("cannot parse to json, so send empty object");
-		return undefined;
+		console.warn(e);
+		console.warn(template);
+		return (times: number) => undefined;
 	}
 };
 
@@ -47,11 +74,12 @@ const getParams = () => {
 const onClickSingleSend = () => {
 	console.log("onClickSingleSend");
 	fire(progress);
-	const params = getParams();
+	const paramCreator = getCreateParamFunc();
 	const url_to = getUrlTo();
+	const method = getRequestMethod();
 
-	useClient(client)
-	.send_once(url_to, params)
+	useClient(client, method)
+	.send_once(url_to, paramCreator)
 	.then(result => {
 		console.log("send_once finished");
 		console.log(result);
@@ -59,17 +87,19 @@ const onClickSingleSend = () => {
 };
 
 /**
- * 「並列で10回リクエスト」ボタン用のイベント
+ * 「並列で指定回数リクエスト」ボタン用のイベント
  * @param paramId
  */
 const onClickParallelSend = () => {
 	console.log("onClickParallelSend");
 	fire(progress);
-	const params = getParams();
+	const paramCreator = getCreateParamFunc();
 	const url_to = getUrlTo();
+	const method = getRequestMethod();
+	const times = getTimes();
 
-	useClient(client)
-	.send_multiple_parallel(url_to, 10, params)
+	useClient(client, method)
+	.send_multiple_parallel(url_to, times, paramCreator)
 	.then(result => {
 		console.log("send_multiple_parallel finished");
 		console.log(result);
@@ -83,11 +113,13 @@ const onClickParallelSend = () => {
 const onClickSerialSend = () => {
 	console.log("onClickSerialSend");
 	fire(progress);
-	const params = getParams();
+	const paramCreator = getCreateParamFunc();
 	const url_to = getUrlTo();
+	const method = getRequestMethod();
+	const times = getTimes();
 
-	useClient(client)
-	.send_multiple_serial(url_to, 10, params)
+	useClient(client, method)
+	.send_multiple_serial(url_to, times, paramCreator)
 	.then(result => {
 		console.log("send_multiple_serial finished");
 		console.log(result);
